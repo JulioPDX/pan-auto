@@ -1,0 +1,3 @@
+black
+pan-os-python
+rich
