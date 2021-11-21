@@ -1,9 +1,10 @@
-from panos import base
+# from panos import base
 from panos import firewall
 from panos import policies
 from panos import objects
 from panos import network
-from panos import device
+
+# from panos import device
 from rich import print, inspect
 from rich.progress import Progress, SpinnerColumn, TextColumn
 
@@ -409,12 +410,89 @@ fw.add(custom_spg)
 custom_spg.create()
 
 
+# Security Policies
+## Instantiate the Rulebase
+rulebase = policies.Rulebase()
+fw.add(rulebase)
+
+users_to_dns_policy = policies.SecurityRule(
+    name="Users to Internal DNS Server",
+    type="universal",
+    description="Allows user LANs to communicate with internal DNS server",
+    tag=["Internet Gateway"],
+    fromzone=["User LAN"],
+    source=["All User Subnets"],
+    tozone=["Datacenter"],
+    destination=["Datacenter Internal DNS"],
+    application=["dns", "icmp", "ping"],
+    action="allow",
+    group="Internet Security Profile",
+    log_end=True,
+)
+rulebase.add(users_to_dns_policy)
+users_to_dns_policy.create()
+
+dns_to_internet_policy = policies.SecurityRule(
+    name="Internal DNS to Internet",
+    type="universal",
+    description="Allows internal DNS to communicate with Internet",
+    fromzone=["Datacenter"],
+    source=["Datacenter Internal DNS"],
+    tozone=["Outside"],
+    destination=["any"],
+    application=["dns", "icmp", "ping"],
+    action="allow",
+    log_end=True,
+)
+rulebase.add(dns_to_internet_policy)
+dns_to_internet_policy.create()
+
+general_to_internet_policy = policies.SecurityRule(
+    name="General Internet",
+    type="universal",
+    description="Allows users access to the Internet",
+    tag=["Internet Gateway"],
+    fromzone=["User LAN"],
+    source=["All User Subnets"],
+    tozone=["Outside"],
+    destination=["any"],
+    application=["web-browsing", "ssl", "icmp", "ping"],
+    action="allow",
+    group="Internet Security Profile",
+    log_end=True,
+)
+rulebase.add(general_to_internet_policy)
+general_to_internet_policy.create()
+
+
+# Generic Outbound NAT for users
+general_nat = policies.NatRule(
+    name="General NAT",
+    description="General NAT for internet access",
+    nat_type="ipv4",
+    tag=["Outside"],
+    fromzone=["User LAN"],
+    tozone=["Outside"],
+    to_interface="ethernet1/1",
+    source=["All User Subnets"],
+    destination=["any"],
+    source_translation_type="dynamic-ip-and-port",
+    source_translation_address_type="interface-address",
+    source_translation_interface="ethernet1/1",
+    source_translation_ip_address=None,
+    destination_translated_address=None,
+    service="any",
+)
+rulebase.add(general_nat)
+general_nat.create()
+
+
 with Progress(
     SpinnerColumn("aesthetic", speed=0.4), TextColumn("{task.description}")
 ) as progress:
 
     task1 = progress.add_task("[bold yellow]Committing Configuration...", total=1)
     while not progress.finished:
-        print(fw.commit(sync=True))
+        print(fw.commit(sync=True, exception=True))
         progress.update(task1, advance=1)
-print("[bold green]Please see committ output above...[/bold green]")
+print("[bold green]Please see commit output above...[/bold green]")
