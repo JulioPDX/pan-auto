@@ -107,7 +107,6 @@ with Progress(
     # job9 = progress.add_task("[cyan]Configuring OSPF Ranges", total=len(interfaces))
     # job10 = progress.add_task("[cyan]Configuring OSPF Interfaces", total=len(interfaces))
 
-
     while not progress.finished:
         for zone in zones:
             create_zones(fw, zone)
