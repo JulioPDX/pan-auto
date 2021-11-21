@@ -91,16 +91,6 @@ def create_ospf_interface(ospf_area, data):
     return ospf_interface
 
 
-# for zone in zones:
-#     create_zones(fw, zone)
-
-# for tag in tags:
-#     create_tags(fw, tag)
-
-# for interface in interfaces:
-#     create_interfaces(fw, interface)
-
-
 with Progress(
     SpinnerColumn(),
     BarColumn(),
