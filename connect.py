@@ -468,7 +468,7 @@ general_to_internet_policy.create()
 # Generic Outbound NAT for users
 general_nat = policies.NatRule(
     name="General NAT",
-    description="General NAT for internet access",
+    description="Hi General NAT for internet access",
     nat_type="ipv4",
     tag=["Outside"],
     fromzone=["User LAN"],
