@@ -1,5 +1,8 @@
 #!/usr/bin/env python
-"""POC script used to configure a Palo Alto Firewall"""
+"""
+POC script used to configure a Palo Alto Firewall.
+Config examples are based on the Pluralsight course by Craig Stansbury.
+"""
 
 from panos import firewall
 from panos import policies
