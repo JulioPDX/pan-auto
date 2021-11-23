@@ -22,7 +22,7 @@ from configs.security_policies import security_policies
 from configs.nats import nats
 
 
-fw = firewall.Firewall("192.168.10.192", "admin", "PaloAlto123!")
+fw = firewall.Firewall("192.168.10.195", "admin", "PaloAlto123!")
 
 
 def create_zone(fire, curent_zone):
@@ -47,12 +47,11 @@ def create_interface(fire, current_int):
     """Creates interfaces and sets to proper VR and Zone, both must previoisly exist"""
     set_interface = network.EthernetInterface(**current_int["data"])
     fire.add(set_interface)
+    set_interface.create()
+    set_interface.set_zone(current_int["zone"], update=True, refresh=True)
     set_interface.set_virtual_router(
         current_int["virtual_router"], update=True, refresh=True
     )
-    set_interface.set_zone(current_int["zone"], update=True, refresh=True)
-    fire.add(set_interface)
-    set_interface.create()
     return set_interface
 
 
@@ -240,5 +239,5 @@ with Progress(
 
             commit = fw.commit(sync=True, exception=True)
             progress.update(final, advance=1)
-            # rprint("[bold green]Please see commit output below...[/bold green]")
+
 rprint(commit)

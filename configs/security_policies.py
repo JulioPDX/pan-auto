@@ -10,7 +10,6 @@ security_policies = [
         "destination": ["Datacenter Internal DNS"],
         "application": ["dns", "icmp", "ping"],
         "action": "allow",
-        "group": "Internet Security Profile",
         "log_end": True,
     },
     {
@@ -24,7 +23,6 @@ security_policies = [
         "destination": ["Datacenter Internal DNS"],
         "application": ["dns", "icmp", "ping"],
         "action": "allow",
-        "group": "Internet Security Profile",
         "log_end": True,
     },
     {
@@ -50,7 +48,6 @@ security_policies = [
         "destination": ["any"],
         "application": ["web-browsing", "ssl", "icmp", "ping"],
         "action": "allow",
-        "group": "Internet Security Profile",
         "log_end": True,
     },
 ]
