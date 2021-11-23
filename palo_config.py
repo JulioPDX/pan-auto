@@ -241,4 +241,4 @@ with Progress(
             commit = fw.commit(sync=True, exception=True)
             progress.update(final, advance=1)
             # rprint("[bold green]Please see commit output below...[/bold green]")
-            rprint(commit)
+rprint(commit)
